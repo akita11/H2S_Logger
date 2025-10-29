@@ -11,6 +11,10 @@
                 | 1  | 1  |    0x77   default i2c address
   * @n Experimental phenomenon: Print all data via serial port
 */
+
+// DFRobot Gravity H2S Sensor (SEN0467)
+// https://www.dfrobot.com/product-2511.html
+
 #include "M5Unified.h"
 #include "DFRobot_MultiGasSensor.h"
 #include <SD.h>
@@ -42,6 +46,8 @@ void ShowStatus(){
 void setup() {
 
   M5.begin();
+	M5.Display.setTextScroll(true);
+	M5.Display.setTextSize(2);
 
   while(!gas.begin())
   {
@@ -49,7 +55,7 @@ void setup() {
     delay(1000);
   }
   printf("The device is connected successfully!\n");
-
+/*
 	SPI.begin();
   	while(false == 	SD.begin(GPIO_NUM_4, SPI, 15000000)){
 		M5.Display.setCursor(200, 0);
@@ -57,6 +63,7 @@ void setup() {
 		delay(500);
 	}
 	ShowStatus();
+*/
 
   gas.changeAcquireMode(gas.PASSIVITY);
   delay(1000);
@@ -66,6 +73,7 @@ void setup() {
 
 void loop() {
   printf("Ambient:%s / Cons:%f[%vol] / Temp:%f[degC]\n", gas.queryGasType().c_str(), gas.readGasConcentrationPPM(), gas.readTempC());
+  M5.Display.printf("%.2f[%%vol] %.2f[degC]\n", gas.readGasConcentrationPPM(), gas.readTempC());
   delay(1000);
 }
 
